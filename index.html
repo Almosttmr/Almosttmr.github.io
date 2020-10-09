@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme-color" content=#58b77a>
+  <title>庶几明日</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Altmr">
+  <meta name="keywords" content="">
+  <meta name="description" content="这次又能坚持多久？">
+  <script id="hexo-configurations">
+  var CONFIG = {
+    root: '/',
+    theme: 'lx',
+    version: '0.3.9',
+    localsearch:{
+      "enable": true,
+      "trigger": "auto",
+      "top_n_per_article": 1,
+      "unescape": false,
+      "preload": false
+      },
+    path: 'search.xml'
+  };
+</script>
+
+  <link rel="shortcut icon" href="/me.ico">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/css/main.min.css">
+  <style type="text/css">
+    pre,
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+    html {
+      font-family: sans-serif;
+    }
+    body {
+      font-family: sans-serif;
+    }
+    h1, h2, h3, h4, h5, figure {
+      font-family: sans-serif;
+    }
+    .menu-container{
+      font-family: sans-serif;
+    }
+  </style>
+
+  <script src="//cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/jquery.jside.menu.js"></script>
+	<script>
+	$(document).ready(function(){
+	$(".menu-container").jSideMenu({
+	    jSidePosition: "position-right",
+	    jSideSticky: true,
+	    jSideSkin: "greenish",
+	     });
+	}); 
+	</script>
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Fira Code:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+<div id="page">
+<a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i></a>
+<div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Search..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+<div id="lx-aside" style="background-image: url(/images/16.jpg)">
+  <div class="overlay">
+  <div class="featured">
+    <div class="avatar"><a href="/"><img src="/images/mqm.jpg"></a></div>
+    <span>Altmr</span>
+    <h1>庶几明日</h1>
+    
+    
+  </div>
+  </div>
+</div>
+
+<div id="lx-main-content">
+  <div class="lx-post"> 
+
+  <div class="lx-entry padding">
+    <div>
+      <h2 class="title"><a href="/2020/10/08/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-4/">逆向练习#4</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-08</span>
+      <p><h1 id="BUUCTF-xor"><a href="#BUUCTF-xor" class="headerlink" title="[BUUCTF-xor]"></a>[BUUCTF-xor]</h1><h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>认识了简单的伪代码之后，要开始看复杂的了。</p>
+<h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>在exeinfo中确认信息后，放入ida，找到main函数，f5查看伪代码</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201008111053312.png" alt="image-20201008111053312"></p>
+<p>直接从网上扒来的图，因为我第一眼真的看不懂啊呜呜</p>
+<p>逻辑具体是：首先判断我们的输入v6长度是否为33，不是就进入label_12，下面可以看到就是返回”Failed”。</p>
+<p>然后<code>i=1，v6[1]</code>代表从输入的第二位开始，<code>^=</code>表示异或（即xor）。即把两个数据二进制化，对位相同则输出0，不同输出1，再以输出的二进制转换回来。</p>
+<p>例子：5和3转为二进制分别为：0101 、0011，异或结果0110，转换为十进制的6，即5^3=6.</p>
+<p>但是<code>a^=b</code>是什么操作？应该是把异或好的数据赋值给a。</p>
+<p>之后，比较<code>v6</code>与<code>global</code>，（33uLL我不明白什么意思，uLL应该是数据类型，unsiged Long Long，33应该就是长度吧，但不知道这里面为什么说的是前31位）</p>
+<h3 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h3><p>跟进global，里面有一串存储数据aFKWOXZUPFVMDGH，再跟进</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">__cstring:0000000100000F6E aFKWOXZUPFVMDGH db &#39;f&#39;,0Ah              ; DATA XREF: __data:_global↓o</span><br><span class="line">__cstring:0000000100000F6E                 db &#39;k&#39;,0Ch,&#39;w&amp;O.@&#39;,11h,&#39;x&#39;,0Dh,&#39;Z;U&#39;,11h,&#39;p&#39;,19h,&#39;F&#39;,1Fh,&#39;v&quot;M#D&#39;,0Eh,&#39;g&#39;</span><br><span class="line">__cstring:0000000100000F6E                 db 6,&#39;h&#39;,0Fh,&#39;G2O&#39;,0</span><br></pre></td></tr></table></figure>
+
+<p>既然知道了求得global的原理是异或，那么就反着来求出flag。异或反运算就是再异或一次。</p>
+<p><code>0Ah</code>，<code>0ch</code>这些其实是十六进制，其他为字符串。</p>
+<p>于是写python脚本，第一位f是不变的，从第二位0Ah开始。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">str1 = [<span class="string">&#x27;f&#x27;</span>, <span class="number">0x0A</span>, <span class="string">&#x27;k&#x27;</span>, <span class="number">0x0C</span>, <span class="string">&#x27;w&#x27;</span>, <span class="string">&#x27;&amp;&#x27;</span>, <span class="string">&#x27;O&#x27;</span>, <span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;@&#x27;</span>, <span class="number">0x11</span>, <span class="string">&#x27;x&#x27;</span>, <span class="number">0x0D</span>, <span class="string">&#x27;Z&#x27;</span>, <span class="string">&#x27;;&#x27;</span>, <span class="string">&#x27;U&#x27;</span>, <span class="number">0x11</span>, <span class="string">&#x27;p&#x27;</span>, <span class="number">0x19</span>, <span class="string">&#x27;F&#x27;</span>, <span class="number">0x1F</span>, <span class="string">&#x27;v&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;&quot;&#x27;</span>, <span class="string">&#x27;M&#x27;</span>, <span class="string">&#x27;#&#x27;</span>, <span class="string">&#x27;D&#x27;</span>, <span class="number">0x0E</span>, <span class="string">&#x27;g&#x27;</span>, <span class="number">6</span>, <span class="string">&#x27;h&#x27;</span>, <span class="number">0x0F</span>, <span class="string">&#x27;G&#x27;</span>, <span class="string">&#x27;2&#x27;</span>, <span class="string">&#x27;O&#x27;</span>]</span><br><span class="line"></span><br><span class="line">x = <span class="string">&#x27;f&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(str1)):</span><br><span class="line">    <span class="keyword">if</span> (isinstance(str1[i], str)):</span><br><span class="line">        <span class="keyword">if</span> (isinstance(str1[i - <span class="number">1</span>], str)):</span><br><span class="line">            x += chr(ord(str1[i]) ^ ord(str1[i - <span class="number">1</span>]))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            x += chr(ord(str1[i]) ^ str1[i - <span class="number">1</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        x += chr(str1[i] ^ ord(str1[i - <span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">print(x)</span><br></pre></td></tr></table></figure>
+
+<p>首先把我们的数据输入，把16进制的数据写成python能识别的。查看第i位是不是字符串类型，不是就让第二位和第一位异或，输出加在x后面。</p>
+<p>ord表示把字符串转化为十进制数字，因为ord（）内只能是字符串类型，所以要先isinstance判断。</p>
+<p>这个脚本其实有bug，连续两个数字就出错了。改正也很简单，最下面的else内改为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (isinstance(str1[i - <span class="number">1</span>], str)):</span><br><span class="line">    x += chr(str1[i] ^ ord(str1[i - <span class="number">1</span>]))</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    x += chr(str1[i] ^ str1[i - <span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+
+<h3 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h3><p>得出结果，flag{QianQiuWanDai_YiTongJiangHu}，完事！</p>
+</p>
+      <div class="post-button"><a class="btn" href="/2020/10/08/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-4/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
+      <h2 class="title"><a href="/2020/10/07/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-3/">逆向练习#3</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
+      <p><h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>老样子放进exeinfo中查看信息</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007194820045.png" alt="image-20201007194820045"></p>
+<p>这次是有UPX壳的哦。<a target="_blank" rel="noopener" href="https://www.onlinedown.net/soft/634046.htm">于是从网上找了一个万能破壳器</a>，壳这方面的知识有所欠缺。不过现在先就把脱壳后的文件丢进IDA吧。如果不脱壳，程序里什么字都看不见？</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007195519315.png" alt="image-20201007195519315"></p>
+<h3 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h3><p>进去之后主函数的关键信息马上就露出来了</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007195928668.png" alt="image-20201007195928668"></p>
+<p>F5之后</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007195947826.png" alt="image-20201007195947826"></p>
+<p>能看出最后是判断V5和V4是否相同，v5就是输入值。v4是 HappyNewYear</p>
+<p>这是道简单题，题目也明显提示了。把v4套个flag格式填题目，正确！</p>
+<p>思考：壳是什么？脱壳的原理？</p>
+</p>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-3/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
+      <h2 class="title"><a href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A02/">逆向练习#2</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
+      <p><h1 id="BUUCTF-Reverse2"><a href="#BUUCTF-Reverse2" class="headerlink" title="[BUUCTF-Reverse2]"></a>[BUUCTF-Reverse2]</h1><p>1.下载下来发现不是exe文件，放进Exeinfo PE中查看信息</p>
+<p><img src="https://i.loli.net/2020/10/07/Syw7HTAML8uVr4l.png" alt="image-20201006175641359"></p>
+<p>百度了一下elf文件是什么，不懂，先扔IDA里面试试。</p>
+<p>2.放入IDA，发现有main函数，进去，flag一般都在main函数中。</p>
+<p><img src="https://i.loli.net/2020/10/07/u7UMPLpkwraVxDn.png" alt="image-20201006175920561"></p>
+<p>一眼就能看见关键信息，跟进F5。</p>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A02/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
+      <h2 class="title"><a href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A01/">逆向练习#1</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
+      <p><h1 id="BUUCTF-reverse1"><a href="#BUUCTF-reverse1" class="headerlink" title="[BUUCTF-reverse1]"></a>[BUUCTF-reverse1]</h1><p>逆向复习</p>
+<p>1.打开IDA导入文件（其实首先要放入Exeinfo PE中查看信息）</p>
+<p>2.shift+f12搜索关键字符串  如</p>
+<h3 id="3-遇到问题-摸到字符串地址的时候-不能用f5查看伪代码-并且不能转换成框图-怀疑原因是ida没有识别出这些是函数"><a href="#3-遇到问题-摸到字符串地址的时候-不能用f5查看伪代码-并且不能转换成框图-怀疑原因是ida没有识别出这些是函数" class="headerlink" title="3.遇到问题  摸到字符串地址的时候  不能用f5查看伪代码  并且不能转换成框图  怀疑原因是ida没有识别出这些是函数"></a>3.遇到问题  摸到字符串地址的时候  不能用f5查看伪代码  并且不能转换成框图  怀疑原因是ida没有识别出这些是函数</h3><p>我曾经也遇到过这个问题。然而在百度的过程中，发现“Create Fun”方法并没有用。<img src="https://i.loli.net/2020/10/07/Lw6ithPkQGNR2Ad.png" alt="image-20201006171151959"></p>
+<p>实际上，跟进下面sub_1400118C0地址，就能找到函数所在。（已然是框图显示）</p></p>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A01/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
+      <h2 class="title"><a href="/2020/10/07/%E6%9B%BE%E7%BB%8F%E7%9A%84%E7%90%90%E4%BA%8B/">曾经的琐事（能留下来的，算是纪念）</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
+      <p><p>19.12.14</p>
+<h4 id="荒废"><a href="#荒废" class="headerlink" title="荒废"></a>荒废</h4><p>一看时间已经过了两个多月多一点了，现在才想起我这个博客来。两个月该说长还是短呢？高中的时候希望时间过得快，大学的时候希望时间过得慢，可世间的一切希望都不是如人所愿的。尽管我觉得浪费时间没什么不好的，但生活中的教训会把“原地踏步就是落后”的烙铁印在你的身体里面，你闲下一刻都会觉得不安，可你又仍然选择无所作为。慕强狗，我是个慕强狗，我也是个懒狗。说好听点是充满上进心，懂得忙里偷闲，但我不喜欢这样，因为我被他束缚住了。所以我选择去接纳我自己，在放弃自己“所谓为人”的尊严，懒狗也好，慕强狗也罢，实际上什么都没起作用，生活没有改变，我依然会困了想睡觉饿了想吃饭，满足了这些后依然感到全身幸福。</p>
+<p>以上大概没什么意义，未来的我翻开这个博客大概看不出什么深意，因为我本就没有什么深意，但我知道我是个会过度解读的人，而过度解读的我会给自己强行安置上进心，这不坏。</p>
+<p>最后想说的就是我不知道这些会给谁看到，我内心是隐隐希望有人能看到的，也是隐隐希望有人能看到这些字而欣赏我的，甚至来和我聊天、成为知音。这些是不会发生的，但这不影响它成为一个美好的希冀，纯属是因为自己小时候看太多漫画被营造的浪漫情结深深吸引从而无限神往。</p>
+<p>还没到最后。我想做的其实是技术记录向博客，不过偶尔会扔些心得shit吧，虽然这比在微博开个小号产shit要麻烦得多。但是要随性一点对吧。</p>
+<p>其实最尴尬的是以后我可能会给熟人分享自己的博客，这倒是个值得思考的问题，这些作话要是给熟人看到了，他是怎么想的？对，你看到了吧！这就是我，越是了解一个人，就会越看到这个人产出shit。这要怪我外有隐瞒内而充满倾诉欲望。有些时候我是满足的，其实只是我把欲望的洞口粉饰了下而已。并且我觉得，我现在做得很好，这大概就是我最大的错误，而却无法改正，因为我以此为生。</p></p>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E6%9B%BE%E7%BB%8F%E7%9A%84%E7%90%90%E4%BA%8B/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
+      <h2 class="title"><a href="/2020/10/07/%E7%94%B5%E8%84%91%E9%87%8D%E8%A3%85%E5%90%8E%E5%A6%82%E4%BD%95%E5%86%8D%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/">电脑重装后如何再搭建与备份hexo博客</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
+      <p><p>那时候就想着，这些东西应该丢不掉，然而再搭建还是有点麻烦。想着要不就用CSDN或者博客园吧，但果然还是写好直接上传更爽。</p>
+<p>唉，痛快玩了几个月，总是试着挖掘出可有可无的答案。</p>
+<p>实际上，我懂的东西不多，性格又懒散悲观，所以这一切结束后，还是得往前走。走啊，你妈的！</p>
+<h4 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h4><p>下载Git 与 node配置环境  百度就可，一路next，也没什么需要特别注意的。傻瓜式一键配置。（不知道会不会出问题）</p>
+<h4 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h4><p>配置name与email</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name=<span class="string">&quot;你的名字&quot;</span></span><br><span class="line">git config --global user.email=<span class="string">&quot;你的邮箱&quot;</span></span><br></pre></td></tr></table></figure></p>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E7%94%B5%E8%84%91%E9%87%8D%E8%A3%85%E5%90%8E%E5%A6%82%E4%BD%95%E5%86%8D%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
+      <h2 class="title"><a href="/2020/10/07/time/">再次开始</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
+      <p><p> 常见错误： 文章头添加，后面一定要带空格。</p>
+<blockquote class='blockquote-center'><p>完全不懂网页的家伙做起了博客，要感谢前人与如今互联网。</p>
+</blockquote>
+
+<p>（其实和别家的博客差不多吧？就是为了风格麻烦了点）</p>
+</p>
+      <div class="post-button"><a class="btn" href="/2020/10/07/time/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+
+
+
+
+<footer>
+  <div>
+  Copyright &copy; 2019.<a href="/">庶几明日</a><br>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme <a href="https://lx.js.org" target="_blank">Lx</a><br>
+  </div>
+</footer>
+
+  </div>
+</div>
+</div>
+
+<button class="hamburger hamburger--arrow-r" type="button">
+    <div class="hamburger-box">
+      <div class="hamburger-inner"></div>
+    </div>
+</button> 
+<div class="menu visibility">
+  <div class="menu-head">
+    <span class="layer">
+      <div class="col">
+        <div class="row for-pic">
+          <div class="profile-pic">
+            <a href="/"><img src="/images/mqm.jpg" alt="Altmr"/></a>
+          </div>
+        </div>
+        <div class="row for-name">
+          <p>Altmr</p>
+          <span class="tagline">愚蠢而求知</span>
+        </div>
+      </div>
+    </span>
+  </div>
+  <nav class="menu-container">
+  <ul class="menu-items">
+    <li><a href="/"><i class="fa fa-home fa-fw"></i>Home</a></li>
+    <li><a href="/archives/"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+    
+    <li class="has-sub"><span class="dropdown-heading">
+      <i class="fa fa-bookmark fa-fw"></i>Pages</span>
+        <ul>
+          <li><a href="/guestbook/">Guestbook</a></li>
+        <li><a href="/about/">About</a></li>
+        </ul>
+    </li>
+    <li class="has-sub"><span class="dropdown-heading">
+      <i class="fa fa-link fa-fw"></i>Friends</span>
+        <ul>
+          <li> <a href="https://lx.js.org" target="_blank">Theme-Lx</a></li>
+        </ul>
+    </li>
+  </ul>
+  </nav>
+</div>
+
+<div class="gototop js-top">
+  <a href="#" class="js-gotop"><i class="fa fa-arrow-up"></i></a>
+</div>
+<script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/jquery.easing.min.js"></script>
+<script>
+(function () {
+	"use strict";
+	var goToTop = function() {
+		$(".js-gotop").on("click", function(event){
+			event.preventDefault();
+			$("html, body").animate({
+				scrollTop: $("html").offset().top
+			}, 500, "easeInOutExpo");
+			return false;
+		});
+		$(window).scroll(function(){
+			var $win = $(window);
+			if ($win.scrollTop() > 200) {
+				$(".js-top").addClass("active");
+			} else {
+				$(".js-top").removeClass("active");
+			}
+		});
+	};
+	$(function(){
+		goToTop();
+	});
+}());
+</script>
+<script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/local.search.js"></script>
+
+
+</body>
+</html>
