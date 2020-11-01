@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme-color" content=#58b77a>
+  <title>逆向练习#10 | 庶几明日</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Altmr">
+  <meta name="keywords" content="">
+  <meta name="description" content="谁来看看这个懒鬼这次又能坚持多久？">
+  <script id="hexo-configurations">
+  var CONFIG = {
+    root: '/',
+    theme: 'lx',
+    version: '0.3.9',
+    localsearch:{
+      "enable": true,
+      "trigger": "auto",
+      "top_n_per_article": 1,
+      "unescape": false,
+      "preload": false
+      },
+    path: 'search.xml'
+  };
+</script>
+
+  <link rel="shortcut icon" href="/me.ico">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/css/main.min.css">
+  <style type="text/css">
+    pre,
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+    html {
+      font-family: sans-serif;
+    }
+    body {
+      font-family: sans-serif;
+    }
+    h1, h2, h3, h4, h5, figure {
+      font-family: sans-serif;
+    }
+    .menu-container{
+      font-family: sans-serif;
+    }
+  </style>
+
+  <script src="//cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/jquery.jside.menu.js"></script>
+	<script>
+	$(document).ready(function(){
+	$(".menu-container").jSideMenu({
+	    jSidePosition: "position-right",
+	    jSideSticky: true,
+	    jSideSkin: "greenish",
+	     });
+	}); 
+	</script>
+  <!--baidu_analytics-->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?5d59131e4092e174540eff155734d8c7";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Fira Code:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body>
+<div class="single">
+<a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i></a>
+<div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Search..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+<div id="page">
+<div id="lx-aside" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/images/post_cover.jpeg)" data-stellar-background-ratio="0.5">
+  <div class="overlay">
+  <div class="page-title">
+    <div class="avatar"><a href="/"><img src="/images/mqm.jpg"></a></div>
+    <span>2020-10-30</span>
+    <h2>逆向练习#10</h2>
+    
+    <div class="social-links">
+    <a href="https://github.com/Almosttmr" target="_blank"><i class="fa fa-github fa-fw"></i></a>
+</div></div>
+</div>
+</div>
+
+<div id="lx-main-content">
+  <div class="lx-post">
+    <div class="lx-entry padding">
+      <div>
+        <h1 id="Buuctf-rsa"><a href="#Buuctf-rsa" class="headerlink" title="Buuctf-rsa"></a>Buuctf-rsa</h1><p>前言：rsa加密确实是很有名。但这应该是密码学范畴吧？</p>
+<p>公钥n = p * q，其中p和q是两个大素数</p>
+<p>e是随机选择的数，作为公钥</p>
+<p>d是跟e有关的一个数，满足条件式：ed=1（mod phi（n））</p>
+<p>phi（n）是欧拉函数，phi（n）=（p-1）（q-1）</p>
+<p>加密过程：设明文为m，密文为c</p>
+<p>c = m^e（mod n）</p>
+<p>解密过程：</p>
+<p>m=c^d （mod n）</p>
+<p>RSA密钥体制中，n和e作为公钥，是都可以得到的值；d作为私钥，是私人拥有的</p>
+<p>要破解RSA，最常用的方法是大素数分解，即：找到p和q，使得n=p*q成立</p>
+<h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>下载来文件有两个，flag.enc和pub.key。</p>
+<p>用UE打开pub.key后，会转换里面的十六进制，得</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-----BEGIN PUBLIC KEY-----</span><br><span class="line">MDwwDQYJKoZIhvcNAQEBBQADKwAwKAIhAMAzLFxkrkcYL2wch21CM2kQVFpY9+7+</span><br><span class="line">&#x2F;AvKr1rzQczdAgMBAAE&#x3D;</span><br><span class="line">-----END PUBLIC KEY-----</span><br></pre></td></tr></table></figure>
+
+<h3 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h3><p>然后将公钥进行分析，提取n，e</p>
+<table>
+<thead>
+<tr>
+<th>key长度：</th>
+<th>256</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>模数：</td>
+<td>C0332C5C64AE47182F6C1C876D42336910545A58F7EEFEFC0BCAAF5AF341CCDD</td>
+</tr>
+<tr>
+<td>指数：</td>
+<td>65537 (0x10001)</td>
+</tr>
+</tbody></table>
+<p>借助了在线解密工具</p>
+<p>即e=65537</p>
+<p>n=86934482296048119190666062003494800588905656017203025617216654058378322103517（十进制）</p>
+<h3 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h3><p>再通过n解析p，q</p>
+<p>这里也是借助在线工具  <a target="_blank" rel="noopener" href="http://www.factordb.com/index.php?query=86934482296048119190666062003494800588905656017203025617216654058378322103517">地址</a></p>
+<p>得出</p>
+<p>p = 285960468890451637935629440372639283459</p>
+<p>q = 304008741604601924494328155975272418463</p>
+<h3 id="4"><a href="#4" class="headerlink" title="4."></a>4.</h3><p>再用脚本解密flag.enc</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"><span class="keyword">import</span> rsa</span><br><span class="line"></span><br><span class="line">e = <span class="number">65537</span></span><br><span class="line">n = <span class="number">86934482296048119190666062003494800588905656017203025617216654058378322103517</span></span><br><span class="line">p = <span class="number">285960468890451637935629440372639283459</span></span><br><span class="line">q = <span class="number">304008741604601924494328155975272418463</span></span><br><span class="line"></span><br><span class="line">phin = (q<span class="number">-1</span>)*(p<span class="number">-1</span>)</span><br><span class="line">d = gmpy2.invert(e, phin)</span><br><span class="line"></span><br><span class="line">key = rsa.PrivateKey(n, e, int(d), p, q)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">&quot;flag.enc&quot;</span>, <span class="string">&quot;rb+&quot;</span>) <span class="keyword">as</span> f:  <span class="comment">#你对应的文件位置</span></span><br><span class="line">    f = f.read()</span><br><span class="line">    print(rsa.decrypt(f, key))</span><br></pre></td></tr></table></figure>
+
+<h3 id="5"><a href="#5" class="headerlink" title="5."></a>5.</h3><p>得到flag：flag{decrypt_256} 搞定！</p>
+<p>不过这道题，只能算是拓展阅历吧。</p>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="lx-navigation">
+	<div class="lx-cover prev lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/images/footer-l.jpeg)">
+		<div class="overlay"></div>
+		<a class="copy" href="/2025/10/07/%E5%B7%A5%E5%86%9C%E8%B7%AF/">
+			<div class="display-t">
+				<div class="display-tc">
+					<div>
+						<span>Next</span>
+						<h3>工农路</h3>
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+        <div class="lx-cover next lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/images/footer-r.jpeg)">
+		<div class="overlay"></div>
+		<a class="copy" href="/2020/10/30/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-9/">
+			<div class="display-t">
+				<div class="display-tc">
+					<div>
+						<span>Prev</span>
+						<h3>逆向练习#9</h3>
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+</div>
+
+</div>
+<div class="comment"><div id="comments"></div></div>
+<footer>
+  <div>
+  Copyright &copy; 2019.<a href="/">庶几明日</a><br>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme <a href="https://lx.js.org" target="_blank">Lx</a><br>
+  </div>
+</footer>
+
+</div>
+
+<button class="hamburger hamburger--arrow-r" type="button">
+    <div class="hamburger-box">
+      <div class="hamburger-inner"></div>
+    </div>
+</button> 
+<div class="menu visibility">
+  <div class="menu-head">
+    <span class="layer">
+      <div class="col">
+        <div class="row for-pic">
+          <div class="profile-pic">
+            <a href="/"><img src="/images/mqm.jpg" alt="Altmr"/></a>
+          </div>
+        </div>
+        <div class="row for-name">
+          <p>Altmr</p>
+          <span class="tagline">愚蠢而求知</span>
+        </div>
+      </div>
+    </span>
+  </div>
+  <nav class="menu-container">
+  <ul class="menu-items">
+    <li><a href="/"><i class="fa fa-home fa-fw"></i>Home</a></li>
+    <li><a href="/archives/"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+    
+    <li class="has-sub"><span class="dropdown-heading">
+      <i class="fa fa-bookmark fa-fw"></i>Pages</span>
+        <ul>
+          <li><a href="/guestbook/">Guestbook</a></li>
+        <li><a href="/about/">About</a></li>
+        </ul>
+    </li>
+    <li class="has-sub"><span class="dropdown-heading">
+      <i class="fa fa-link fa-fw"></i>Friends</span>
+        <ul>
+          <li> <a href="https://lx.js.org" target="_blank">Theme-Lx</a></li>
+        <li> <a href="http://greenhateam.top" target="_blank">GreenHaTeam</a></li>
+        </ul>
+    </li>
+  </ul>
+  </nav>
+</div>
+
+<div class="gototop js-top">
+  <a href="#" class="js-gotop"><i class="fa fa-arrow-up"></i></a>
+</div>
+<script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/jquery.easing.min.js"></script>
+<script>
+(function () {
+	"use strict";
+	var goToTop = function() {
+		$(".js-gotop").on("click", function(event){
+			event.preventDefault();
+			$("html, body").animate({
+				scrollTop: $("html").offset().top
+			}, 500, "easeInOutExpo");
+			return false;
+		});
+		$(window).scroll(function(){
+			var $win = $(window);
+			if ($win.scrollTop() > 200) {
+				$(".js-top").addClass("active");
+			} else {
+				$(".js-top").removeClass("active");
+			}
+		});
+	};
+	$(function(){
+		goToTop();
+	});
+}());
+</script>
+<script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/local.search.js"></script>
+
+
+</body>
+</html>

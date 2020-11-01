@@ -109,6 +109,50 @@
 
   <div class="lx-entry padding">
     <div>
+      <h2 class="title"><a href="/2020/10/07/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-3/">逆向练习#3</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
+      <p><h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>老样子放进exeinfo中查看信息</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007194820045.png" alt="image-20201007194820045"></p>
+<p>这次是有UPX壳的哦。<a target="_blank" rel="noopener" href="https://www.onlinedown.net/soft/634046.htm">于是从网上找了一个万能破壳器</a>，壳这方面的知识有所欠缺。不过现在先就把脱壳后的文件丢进IDA吧。如果不脱壳，程序里什么字都看不见？</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007195519315.png" alt="image-20201007195519315"></p>
+<h3 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h3><p>进去之后主函数的关键信息马上就露出来了</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007195928668.png" alt="image-20201007195928668"></p>
+<p>F5之后</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007195947826.png" alt="image-20201007195947826"></p>
+<p>能看出最后是判断V5和V4是否相同，v5就是输入值。v4是 HappyNewYear</p>
+<p>这是道简单题，题目也明显提示了。把v4套个flag格式填题目，正确！</p>
+<p>思考：壳是什么？脱壳的原理？</p>
+</p>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-3/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
+      <h2 class="title"><a href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A02/">逆向练习#2</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
+      <p><h1 id="BUUCTF-Reverse2"><a href="#BUUCTF-Reverse2" class="headerlink" title="[BUUCTF-Reverse2]"></a>[BUUCTF-Reverse2]</h1><p>1.下载下来发现不是exe文件，放进Exeinfo PE中查看信息</p>
+<p><img src="https://i.loli.net/2020/10/07/Syw7HTAML8uVr4l.png" alt="image-20201006175641359"></p>
+<p>百度了一下elf文件是什么，不懂，先扔IDA里面试试。</p>
+<p>2.放入IDA，发现有main函数，进去，flag一般都在main函数中。</p>
+<p><img src="https://i.loli.net/2020/10/07/u7UMPLpkwraVxDn.png" alt="image-20201006175920561"></p>
+<p>一眼就能看见关键信息，跟进F5。</p>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A02/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
+      <h2 class="title"><a href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A01/">逆向练习#1</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
+      <p><h1 id="BUUCTF-reverse1"><a href="#BUUCTF-reverse1" class="headerlink" title="[BUUCTF-reverse1]"></a>[BUUCTF-reverse1]</h1><p>逆向复习</p>
+<p>1.打开IDA导入文件（其实首先要放入Exeinfo PE中查看信息）</p>
+<p>2.shift+f12搜索关键字符串  如</p>
+<h3 id="3-遇到问题-摸到字符串地址的时候-不能用f5查看伪代码-并且不能转换成框图-怀疑原因是ida没有识别出这些是函数"><a href="#3-遇到问题-摸到字符串地址的时候-不能用f5查看伪代码-并且不能转换成框图-怀疑原因是ida没有识别出这些是函数" class="headerlink" title="3.遇到问题  摸到字符串地址的时候  不能用f5查看伪代码  并且不能转换成框图  怀疑原因是ida没有识别出这些是函数"></a>3.遇到问题  摸到字符串地址的时候  不能用f5查看伪代码  并且不能转换成框图  怀疑原因是ida没有识别出这些是函数</h3><p>我曾经也遇到过这个问题。然而在百度的过程中，发现“Create Fun”方法并没有用。<img src="https://i.loli.net/2020/10/07/Lw6ithPkQGNR2Ad.png" alt="image-20201006171151959"></p>
+<p>实际上，跟进下面sub_1400118C0地址，就能找到函数所在。（已然是框图显示）</p></p>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A01/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
       <h2 class="title"><a href="/2020/10/07/%E6%9B%BE%E7%BB%8F%E7%9A%84%E7%90%90%E4%BA%8B/">曾经的琐事（能留下来的，算是纪念）</a></h2>
       <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
       <p><p>19.12.14</p>

@@ -109,6 +109,85 @@
 
   <div class="lx-entry padding">
     <div>
+      <h2 class="title"><a href="/2025/10/07/%E5%B7%A5%E5%86%9C%E8%B7%AF/">工农路</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2025-10-07</span>
+      <p><h1 id="工农路"><a href="#工农路" class="headerlink" title="工农路"></a>工农路</h1><p>文/汪月婷</p></p>
+      <div class="post-button"><a class="btn" href="/2025/10/07/%E5%B7%A5%E5%86%9C%E8%B7%AF/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
+      <h2 class="title"><a href="/2020/10/30/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-10/">逆向练习#10</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-30</span>
+      <p><h1 id="Buuctf-rsa"><a href="#Buuctf-rsa" class="headerlink" title="Buuctf-rsa"></a>Buuctf-rsa</h1><p>前言：rsa加密确实是很有名。但这应该是密码学范畴吧？</p>
+<p>公钥n = p * q，其中p和q是两个大素数</p>
+<p>e是随机选择的数，作为公钥</p>
+<p>d是跟e有关的一个数，满足条件式：ed=1（mod phi（n））</p>
+<p>phi（n）是欧拉函数，phi（n）=（p-1）（q-1）</p>
+<p>加密过程：设明文为m，密文为c</p>
+<p>c = m^e（mod n）</p>
+<p>解密过程：</p>
+<p>m=c^d （mod n）</p>
+<p>RSA密钥体制中，n和e作为公钥，是都可以得到的值；d作为私钥，是私人拥有的</p>
+<p>要破解RSA，最常用的方法是大素数分解，即：找到p和q，使得n=p*q成立</p>
+<h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>下载来文件有两个，flag.enc和pub.key。</p>
+<p>用UE打开pub.key后，会转换里面的十六进制，得</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-----BEGIN PUBLIC KEY-----</span><br><span class="line">MDwwDQYJKoZIhvcNAQEBBQADKwAwKAIhAMAzLFxkrkcYL2wch21CM2kQVFpY9+7+</span><br><span class="line">&#x2F;AvKr1rzQczdAgMBAAE&#x3D;</span><br><span class="line">-----END PUBLIC KEY-----</span><br></pre></td></tr></table></figure>
+
+<h3 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h3><p>然后将公钥进行分析，提取n，e</p>
+<table>
+<thead>
+<tr>
+<th>key长度：</th>
+<th>256</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>模数：</td>
+<td>C0332C5C64AE47182F6C1C876D42336910545A58F7EEFEFC0BCAAF5AF341CCDD</td>
+</tr>
+<tr>
+<td>指数：</td>
+<td>65537 (0x10001)</td>
+</tr>
+</tbody></table>
+<p>借助了在线解密工具</p>
+<p>即e=65537</p>
+<p>n=86934482296048119190666062003494800588905656017203025617216654058378322103517（十进制）</p>
+<h3 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h3><p>再通过n解析p，q</p>
+<p>这里也是借助在线工具  <a target="_blank" rel="noopener" href="http://www.factordb.com/index.php?query=86934482296048119190666062003494800588905656017203025617216654058378322103517">地址</a></p>
+<p>得出</p>
+<p>p = 285960468890451637935629440372639283459</p>
+<p>q = 304008741604601924494328155975272418463</p>
+<h3 id="4"><a href="#4" class="headerlink" title="4."></a>4.</h3><p>再用脚本解密flag.enc</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> gmpy2</span><br><span class="line"><span class="keyword">import</span> rsa</span><br><span class="line"></span><br><span class="line">e = <span class="number">65537</span></span><br><span class="line">n = <span class="number">86934482296048119190666062003494800588905656017203025617216654058378322103517</span></span><br><span class="line">p = <span class="number">285960468890451637935629440372639283459</span></span><br><span class="line">q = <span class="number">304008741604601924494328155975272418463</span></span><br><span class="line"></span><br><span class="line">phin = (q<span class="number">-1</span>)*(p<span class="number">-1</span>)</span><br><span class="line">d = gmpy2.invert(e, phin)</span><br><span class="line"></span><br><span class="line">key = rsa.PrivateKey(n, e, int(d), p, q)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">&quot;flag.enc&quot;</span>, <span class="string">&quot;rb+&quot;</span>) <span class="keyword">as</span> f:  <span class="comment">#你对应的文件位置</span></span><br><span class="line">    f = f.read()</span><br><span class="line">    print(rsa.decrypt(f, key))</span><br></pre></td></tr></table></figure>
+
+<h3 id="5"><a href="#5" class="headerlink" title="5."></a>5.</h3><p>得到flag：flag{decrypt_256} 搞定！</p>
+<p>不过这道题，只能算是拓展阅历吧。</p>
+</p>
+      <div class="post-button"><a class="btn" href="/2020/10/30/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-10/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
+      <h2 class="title"><a href="/2020/10/30/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-9/">逆向练习#9</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-30</span>
+      <p><h1 id="BUUCTF-简单注册器"><a href="#BUUCTF-简单注册器" class="headerlink" title="BUUCTF-简单注册器"></a>BUUCTF-简单注册器</h1><p>前言：本来想着，简单题目没必要写笔记了吧。但还是得写啊。还得补学C语言与python，毕竟难的东西一下写不出来。先不偷懒。</p>
+<h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>本题是apk文件，需要apk逆向工具，我去吾爱论坛上下载了破解好的jeb3。解压即可用，非常方便。</p>
+<h3 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h3><p>进入jeb，打开apk文件。可以直接发现关键函数在MainActivity层级中，再按下Tab可以实现类似IDA的伪代码功能。选中十六进制数按B键能够转换进制。</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201030174748004.png" alt="image-20201030174748004"></p>
+<p>虽然这是JAVA伪代码，但其实很直观。</p>
+<h3 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h3><p>于是改写成python</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">flagtrue = <span class="string">&quot;dd2940c04462b4dd7c450528835cca15&quot;</span></span><br><span class="line">x = [i <span class="keyword">for</span> i <span class="keyword">in</span> flagtrue]</span><br><span class="line">x[<span class="number">2</span>] = chr(ord(x[<span class="number">2</span>]) + ord(x[<span class="number">3</span>]) - <span class="number">50</span>)</span><br><span class="line">x[<span class="number">4</span>] = chr(ord(x[<span class="number">2</span>]) + ord(x[<span class="number">5</span>]) - <span class="number">48</span>)</span><br><span class="line">x[<span class="number">30</span>] = chr(ord(x[<span class="number">31</span>]) + ord(x[<span class="number">9</span>]) - <span class="number">48</span>)</span><br><span class="line">x[<span class="number">14</span>] = chr(ord(x[<span class="number">0x1b</span>]) + ord(x[<span class="number">0x1c</span>]) - <span class="number">97</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">16</span>):</span><br><span class="line">    x[i],x[<span class="number">31</span>-i] = x[<span class="number">31</span>-i],x[i]</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> (<span class="string">&quot;flag&#123;&quot;</span>+ <span class="string">&#x27;&#x27;</span>.join(x) + <span class="string">&quot;&#125;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>扒来的，完全能够看懂，但自己写不出来，这些语法很值得学习。</p>
+<h3 id="4"><a href="#4" class="headerlink" title="4."></a>4.</h3><p>得出flag：flag{59acc538825054c7de4b26440c0999dd} 搞定！</p>
+</p>
+      <div class="post-button"><a class="btn" href="/2020/10/30/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-9/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
       <h2 class="title"><a href="/2020/10/25/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-8/">逆向练习#8</a></h2>
       <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-25</span>
       <p><h1 id="BUUCTF-re-GXYCTF2019-luck-guy"><a href="#BUUCTF-re-GXYCTF2019-luck-guy" class="headerlink" title="BUUCTF-re-[GXYCTF2019]luck_guy"></a>BUUCTF-re-[GXYCTF2019]luck_guy</h1><p>前言：上个星期去写了科技协会的招新ctf题目。re勉强写，有些没写出来😥。</p>
@@ -260,50 +339,6 @@
 <h3 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h3><p>得出结果，flag{QianQiuWanDai_YiTongJiangHu}，完事！</p>
 </p>
       <div class="post-button"><a class="btn" href="/2020/10/08/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-4/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
-    </div>
-  </div>
-  <div class="lx-entry padding">
-    <div>
-      <h2 class="title"><a href="/2020/10/07/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-3/">逆向练习#3</a></h2>
-      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
-      <p><h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>老样子放进exeinfo中查看信息</p>
-<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007194820045.png" alt="image-20201007194820045"></p>
-<p>这次是有UPX壳的哦。<a target="_blank" rel="noopener" href="https://www.onlinedown.net/soft/634046.htm">于是从网上找了一个万能破壳器</a>，壳这方面的知识有所欠缺。不过现在先就把脱壳后的文件丢进IDA吧。如果不脱壳，程序里什么字都看不见？</p>
-<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007195519315.png" alt="image-20201007195519315"></p>
-<h3 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h3><p>进去之后主函数的关键信息马上就露出来了</p>
-<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007195928668.png" alt="image-20201007195928668"></p>
-<p>F5之后</p>
-<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201007195947826.png" alt="image-20201007195947826"></p>
-<p>能看出最后是判断V5和V4是否相同，v5就是输入值。v4是 HappyNewYear</p>
-<p>这是道简单题，题目也明显提示了。把v4套个flag格式填题目，正确！</p>
-<p>思考：壳是什么？脱壳的原理？</p>
-</p>
-      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-3/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
-    </div>
-  </div>
-  <div class="lx-entry padding">
-    <div>
-      <h2 class="title"><a href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A02/">逆向练习#2</a></h2>
-      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
-      <p><h1 id="BUUCTF-Reverse2"><a href="#BUUCTF-Reverse2" class="headerlink" title="[BUUCTF-Reverse2]"></a>[BUUCTF-Reverse2]</h1><p>1.下载下来发现不是exe文件，放进Exeinfo PE中查看信息</p>
-<p><img src="https://i.loli.net/2020/10/07/Syw7HTAML8uVr4l.png" alt="image-20201006175641359"></p>
-<p>百度了一下elf文件是什么，不懂，先扔IDA里面试试。</p>
-<p>2.放入IDA，发现有main函数，进去，flag一般都在main函数中。</p>
-<p><img src="https://i.loli.net/2020/10/07/u7UMPLpkwraVxDn.png" alt="image-20201006175920561"></p>
-<p>一眼就能看见关键信息，跟进F5。</p>
-      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A02/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
-    </div>
-  </div>
-  <div class="lx-entry padding">
-    <div>
-      <h2 class="title"><a href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A01/">逆向练习#1</a></h2>
-      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
-      <p><h1 id="BUUCTF-reverse1"><a href="#BUUCTF-reverse1" class="headerlink" title="[BUUCTF-reverse1]"></a>[BUUCTF-reverse1]</h1><p>逆向复习</p>
-<p>1.打开IDA导入文件（其实首先要放入Exeinfo PE中查看信息）</p>
-<p>2.shift+f12搜索关键字符串  如</p>
-<h3 id="3-遇到问题-摸到字符串地址的时候-不能用f5查看伪代码-并且不能转换成框图-怀疑原因是ida没有识别出这些是函数"><a href="#3-遇到问题-摸到字符串地址的时候-不能用f5查看伪代码-并且不能转换成框图-怀疑原因是ida没有识别出这些是函数" class="headerlink" title="3.遇到问题  摸到字符串地址的时候  不能用f5查看伪代码  并且不能转换成框图  怀疑原因是ida没有识别出这些是函数"></a>3.遇到问题  摸到字符串地址的时候  不能用f5查看伪代码  并且不能转换成框图  怀疑原因是ida没有识别出这些是函数</h3><p>我曾经也遇到过这个问题。然而在百度的过程中，发现“Create Fun”方法并没有用。<img src="https://i.loli.net/2020/10/07/Lw6ithPkQGNR2Ad.png" alt="image-20201006171151959"></p>
-<p>实际上，跟进下面sub_1400118C0地址，就能找到函数所在。（已然是框图显示）</p></p>
-      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A01/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
     </div>
   </div>
 
