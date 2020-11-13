@@ -109,6 +109,37 @@
 
   <div class="lx-entry padding">
     <div>
+      <h2 class="title"><a href="/2020/10/08/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-4/">逆向练习#4</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-08</span>
+      <p><h1 id="BUUCTF-xor"><a href="#BUUCTF-xor" class="headerlink" title="[BUUCTF-xor]"></a>[BUUCTF-xor]</h1><h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>认识了简单的伪代码之后，要开始看复杂的了。</p>
+<h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>在exeinfo中确认信息后，放入ida，找到main函数，f5查看伪代码</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201008111053312.png" alt="image-20201008111053312"></p>
+<p>直接从网上扒来的图，因为我第一眼真的看不懂啊呜呜</p>
+<p>逻辑具体是：首先判断我们的输入v6长度是否为33，不是就进入label_12，下面可以看到就是返回”Failed”。</p>
+<p>然后<code>i=1，v6[1]</code>代表从输入的第二位开始，<code>^=</code>表示异或（即xor）。即把两个数据二进制化，对位相同则输出0，不同输出1，再以输出的二进制转换回来。</p>
+<p>例子：5和3转为二进制分别为：0101 、0011，异或结果0110，转换为十进制的6，即5^3=6.</p>
+<p>但是<code>a^=b</code>是什么操作？应该是把异或好的数据赋值给a。</p>
+<p>之后，比较<code>v6</code>与<code>global</code>，（33uLL我不明白什么意思，uLL应该是数据类型，unsiged Long Long，33应该就是长度吧，但不知道这里面为什么说的是前31位）</p>
+<h3 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h3><p>跟进global，里面有一串存储数据aFKWOXZUPFVMDGH，再跟进</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">__cstring:0000000100000F6E aFKWOXZUPFVMDGH db &#39;f&#39;,0Ah              ; DATA XREF: __data:_global↓o</span><br><span class="line">__cstring:0000000100000F6E                 db &#39;k&#39;,0Ch,&#39;w&amp;O.@&#39;,11h,&#39;x&#39;,0Dh,&#39;Z;U&#39;,11h,&#39;p&#39;,19h,&#39;F&#39;,1Fh,&#39;v&quot;M#D&#39;,0Eh,&#39;g&#39;</span><br><span class="line">__cstring:0000000100000F6E                 db 6,&#39;h&#39;,0Fh,&#39;G2O&#39;,0</span><br></pre></td></tr></table></figure>
+
+<p>既然知道了求得global的原理是异或，那么就反着来求出flag。异或反运算就是再异或一次。</p>
+<p><code>0Ah</code>，<code>0ch</code>这些其实是十六进制，其他为字符串。</p>
+<p>于是写python脚本，第一位f是不变的，从第二位0Ah开始。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">str1 = [<span class="string">&#x27;f&#x27;</span>, <span class="number">0x0A</span>, <span class="string">&#x27;k&#x27;</span>, <span class="number">0x0C</span>, <span class="string">&#x27;w&#x27;</span>, <span class="string">&#x27;&amp;&#x27;</span>, <span class="string">&#x27;O&#x27;</span>, <span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;@&#x27;</span>, <span class="number">0x11</span>, <span class="string">&#x27;x&#x27;</span>, <span class="number">0x0D</span>, <span class="string">&#x27;Z&#x27;</span>, <span class="string">&#x27;;&#x27;</span>, <span class="string">&#x27;U&#x27;</span>, <span class="number">0x11</span>, <span class="string">&#x27;p&#x27;</span>, <span class="number">0x19</span>, <span class="string">&#x27;F&#x27;</span>, <span class="number">0x1F</span>, <span class="string">&#x27;v&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;&quot;&#x27;</span>, <span class="string">&#x27;M&#x27;</span>, <span class="string">&#x27;#&#x27;</span>, <span class="string">&#x27;D&#x27;</span>, <span class="number">0x0E</span>, <span class="string">&#x27;g&#x27;</span>, <span class="number">6</span>, <span class="string">&#x27;h&#x27;</span>, <span class="number">0x0F</span>, <span class="string">&#x27;G&#x27;</span>, <span class="string">&#x27;2&#x27;</span>, <span class="string">&#x27;O&#x27;</span>]</span><br><span class="line"></span><br><span class="line">x = <span class="string">&#x27;f&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(str1)):</span><br><span class="line">    <span class="keyword">if</span> (isinstance(str1[i], str)):</span><br><span class="line">        <span class="keyword">if</span> (isinstance(str1[i - <span class="number">1</span>], str)):</span><br><span class="line">            x += chr(ord(str1[i]) ^ ord(str1[i - <span class="number">1</span>]))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            x += chr(ord(str1[i]) ^ str1[i - <span class="number">1</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        x += chr(str1[i] ^ ord(str1[i - <span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line">print(x)</span><br></pre></td></tr></table></figure>
+
+<p>首先把我们的数据输入，把16进制的数据写成python能识别的。查看第i位是不是字符串类型，不是就让第二位和第一位异或，输出加在x后面。</p>
+<p>ord表示把字符串转化为十进制数字，因为ord（）内只能是字符串类型，所以要先isinstance判断。</p>
+<p>这个脚本其实有bug，连续两个数字就出错了。改正也很简单，最下面的else内改为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (isinstance(str1[i - <span class="number">1</span>], str)):</span><br><span class="line">    x += chr(str1[i] ^ ord(str1[i - <span class="number">1</span>]))</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    x += chr(str1[i] ^ str1[i - <span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+
+<h3 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h3><p>得出结果，flag{QianQiuWanDai_YiTongJiangHu}，完事！</p>
+</p>
+      <div class="post-button"><a class="btn" href="/2020/10/08/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-4/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>阅读更多</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
       <h2 class="title"><a href="/2020/10/07/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-3/">逆向练习#3</a></h2>
       <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2020-10-07</span>
       <p><h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>老样子放进exeinfo中查看信息</p>
@@ -123,7 +154,7 @@
 <p>这是道简单题，题目也明显提示了。把v4套个flag格式填题目，正确！</p>
 <p>思考：壳是什么？脱壳的原理？</p>
 </p>
-      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-3/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-3/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>阅读更多</a></div>
     </div>
   </div>
   <div class="lx-entry padding">
@@ -136,7 +167,7 @@
 <p>2.放入IDA，发现有main函数，进去，flag一般都在main函数中。</p>
 <p><img src="https://i.loli.net/2020/10/07/u7UMPLpkwraVxDn.png" alt="image-20201006175920561"></p>
 <p>一眼就能看见关键信息，跟进F5。</p>
-      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A02/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A02/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>阅读更多</a></div>
     </div>
   </div>
   <div class="lx-entry padding">
@@ -148,7 +179,7 @@
 <p>2.shift+f12搜索关键字符串  如</p>
 <h3 id="3-遇到问题-摸到字符串地址的时候-不能用f5查看伪代码-并且不能转换成框图-怀疑原因是ida没有识别出这些是函数"><a href="#3-遇到问题-摸到字符串地址的时候-不能用f5查看伪代码-并且不能转换成框图-怀疑原因是ida没有识别出这些是函数" class="headerlink" title="3.遇到问题  摸到字符串地址的时候  不能用f5查看伪代码  并且不能转换成框图  怀疑原因是ida没有识别出这些是函数"></a>3.遇到问题  摸到字符串地址的时候  不能用f5查看伪代码  并且不能转换成框图  怀疑原因是ida没有识别出这些是函数</h3><p>我曾经也遇到过这个问题。然而在百度的过程中，发现“Create Fun”方法并没有用。<img src="https://i.loli.net/2020/10/07/Lw6ithPkQGNR2Ad.png" alt="image-20201006171151959"></p>
 <p>实际上，跟进下面sub_1400118C0地址，就能找到函数所在。（已然是框图显示）</p></p>
-      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A01/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A01/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>阅读更多</a></div>
     </div>
   </div>
   <div class="lx-entry padding">
@@ -161,7 +192,7 @@
 <p>最后想说的就是我不知道这些会给谁看到，我内心是隐隐希望有人能看到的，也是隐隐希望有人能看到这些字而欣赏我的，甚至来和我聊天、成为知音。这些是不会发生的，但这不影响它成为一个美好的希冀，纯属是因为自己小时候看太多漫画被营造的浪漫情结深深吸引从而无限神往。</p>
 <p>还没到最后。我想做的其实是技术记录向博客，不过偶尔会扔些心得shit吧，虽然这比在微博开个小号产shit要麻烦得多。但是要随性一点对吧。</p>
 <p>其实最尴尬的是以后我可能会给熟人分享自己的博客，这倒是个值得思考的问题，这些作话要是给熟人看到了，他是怎么想的？对，你看到了吧！这就是我，越是了解一个人，就会越看到这个人产出shit。这要怪我外有隐瞒内而充满倾诉欲望。有些时候我是满足的，其实只是我把欲望的洞口粉饰了下而已。并且我觉得，我现在做得很好，这大概就是我最大的错误，而却无法改正，因为我以此为生。</p></p>
-      <div class="post-button"><a class="btn" href="/2020/10/07/%E6%9B%BE%E7%BB%8F%E7%9A%84%E7%90%90%E4%BA%8B/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E6%9B%BE%E7%BB%8F%E7%9A%84%E7%90%90%E4%BA%8B/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>阅读更多</a></div>
     </div>
   </div>
   <div class="lx-entry padding">
@@ -174,7 +205,7 @@
 
 <p>（其实和别家的博客差不多吧？就是为了风格麻烦了点）</p>
 </p>
-      <div class="post-button"><a class="btn" href="/2020/10/07/time/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+      <div class="post-button"><a class="btn" href="/2020/10/07/time/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>阅读更多</a></div>
     </div>
   </div>
   <div class="lx-entry padding">
@@ -187,7 +218,7 @@
 <h4 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h4><p>下载Git 与 node配置环境  百度就可，一路next，也没什么需要特别注意的。傻瓜式一键配置。（不知道会不会出问题）</p>
 <h4 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h4><p>配置name与email</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name=<span class="string">&quot;你的名字&quot;</span></span><br><span class="line">git config --global user.email=<span class="string">&quot;你的邮箱&quot;</span></span><br></pre></td></tr></table></figure></p>
-      <div class="post-button"><a class="btn" href="/2020/10/07/%E7%94%B5%E8%84%91%E9%87%8D%E8%A3%85%E5%90%8E%E5%A6%82%E4%BD%95%E5%86%8D%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+      <div class="post-button"><a class="btn" href="/2020/10/07/%E7%94%B5%E8%84%91%E9%87%8D%E8%A3%85%E5%90%8E%E5%A6%82%E4%BD%95%E5%86%8D%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>阅读更多</a></div>
     </div>
   </div>
 
@@ -229,18 +260,18 @@
   </div>
   <nav class="menu-container">
   <ul class="menu-items">
-    <li><a href="/"><i class="fa fa-home fa-fw"></i>Home</a></li>
-    <li><a href="/archives/"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+    <li><a href="/"><i class="fa fa-home fa-fw"></i>首页</a></li>
+    <li><a href="/archives/"><i class="fa fa-archive fa-fw"></i>归档</a></li>
     
     <li class="has-sub"><span class="dropdown-heading">
-      <i class="fa fa-bookmark fa-fw"></i>Pages</span>
+      <i class="fa fa-bookmark fa-fw"></i>页面</span>
         <ul>
           <li><a href="/guestbook/">Guestbook</a></li>
         <li><a href="/about/">About</a></li>
         </ul>
     </li>
     <li class="has-sub"><span class="dropdown-heading">
-      <i class="fa fa-link fa-fw"></i>Friends</span>
+      <i class="fa fa-link fa-fw"></i>友链</span>
         <ul>
           <li> <a href="https://lx.js.org" target="_blank">Theme-Lx</a></li>
         <li> <a href="http://greenhateam.top" target="_blank">GreenHaTeam</a></li>

@@ -582,6 +582,7 @@
     <title>工农路</title>
     <url>/2025/10/07/%E5%B7%A5%E5%86%9C%E8%B7%AF/</url>
     <content><![CDATA[<h1 id="工农路"><a href="#工农路" class="headerlink" title="工农路"></a>工农路</h1><p>文/汪月婷</p>
+<p>20.11.1再读留念</p>
 <a id="more"></a>
 
 <p>我2014年搬到工农路，在这之前它一直叫作工农路，这个名字可能要追溯到某个我未曾经历的，热烈的年代，不过这无所谓。它叫劳动路，红色路，健康路……都一样，都不能改变它如今是一条平庸的路这个事实，甚至因为平庸，所以地名成了负累。而对于我而言，它开始拥有某种特质，开始和劳动路，红色路，健康路区别开来，都是在我搬过来之后发生的事情。  </p>
@@ -602,6 +603,46 @@
 ]]></content>
       <tags>
         <tag>杂事</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>逆向练习#11</title>
+    <url>/2020/11/13/%E9%80%86%E5%90%91%E7%BB%83%E4%B9%A0-11/</url>
+    <content><![CDATA[<h1 id="Buuctf-CrackRTF"><a href="#Buuctf-CrackRTF" class="headerlink" title="Buuctf-CrackRTF"></a>Buuctf-CrackRTF</h1><h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>惯例exeinfo查看信息，放进ida后搜索字符串进入关键函数</p>
+<h3 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main_0</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  DWORD v0; <span class="comment">// eax</span></span><br><span class="line">  DWORD v1; <span class="comment">// eax</span></span><br><span class="line">  CHAR String; <span class="comment">// [esp+4Ch] [ebp-310h]</span></span><br><span class="line">  <span class="keyword">int</span> v4; <span class="comment">// [esp+150h] [ebp-20Ch]</span></span><br><span class="line">  CHAR String1; <span class="comment">// [esp+154h] [ebp-208h]</span></span><br><span class="line">  BYTE pbData; <span class="comment">// [esp+258h] [ebp-104h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(&amp;pbData, <span class="number">0</span>, <span class="number">0x104</span>u);</span><br><span class="line">  <span class="built_in">memset</span>(&amp;String1, <span class="number">0</span>, <span class="number">0x104</span>u);</span><br><span class="line">  v4 = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;pls input the first passwd(1): &quot;</span>);</span><br><span class="line">  <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, &amp;pbData);</span><br><span class="line">  <span class="keyword">if</span> ( <span class="built_in">strlen</span>((<span class="keyword">const</span> <span class="keyword">char</span> *)&amp;pbData) != <span class="number">6</span> ) <span class="comment">//长度等于6位</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Must be 6 characters!\n&quot;</span>);</span><br><span class="line">    ExitProcess(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  v4 = atoi((<span class="keyword">const</span> <span class="keyword">char</span> *)&amp;pbData); <span class="comment">//转换为字符串形式</span></span><br><span class="line">  <span class="keyword">if</span> ( v4 &lt; <span class="number">100000</span> )</span><br><span class="line">    ExitProcess(<span class="number">0</span>);</span><br><span class="line">  <span class="built_in">strcat</span>((<span class="keyword">char</span> *)&amp;pbData, <span class="string">&quot;@DBApp&quot;</span>); <span class="comment">//在输入后面加入@DBApp</span></span><br><span class="line">  v0 = <span class="built_in">strlen</span>((<span class="keyword">const</span> <span class="keyword">char</span> *)&amp;pbData);</span><br><span class="line">  sub_40100A(&amp;pbData, v0, &amp;String1); <span class="comment">//加密函数</span></span><br><span class="line">  <span class="keyword">if</span> ( !_strcmpi(&amp;String1, <span class="string">&quot;6E32D0943418C2C33385BC35A1470250DD8923A9&quot;</span>) )</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;continue...\n\n&quot;</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;pls input the first passwd(2): &quot;</span>); <span class="comment">//第二次输入</span></span><br><span class="line">    <span class="built_in">memset</span>(&amp;String, <span class="number">0</span>, <span class="number">0x104</span>u);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, &amp;String);</span><br><span class="line">    <span class="keyword">if</span> ( <span class="built_in">strlen</span>(&amp;String) != <span class="number">6</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Must be 6 characters!\n&quot;</span>);</span><br><span class="line">      ExitProcess(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">strcat</span>(&amp;String, (<span class="keyword">const</span> <span class="keyword">char</span> *)&amp;pbData);</span><br><span class="line">    <span class="built_in">memset</span>(&amp;String1, <span class="number">0</span>, <span class="number">0x104</span>u);</span><br><span class="line">    v1 = <span class="built_in">strlen</span>(&amp;String);</span><br><span class="line">    sub_401019((BYTE *)&amp;String, v1, &amp;String1);</span><br><span class="line">    <span class="keyword">if</span> ( !_strcmpi(<span class="string">&quot;27019e688a4e62a649fd99cadaafdb4e&quot;</span>, &amp;String1) )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( !(<span class="keyword">unsigned</span> __int8)sub_40100F(&amp;String) )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Error!!\n&quot;</span>);</span><br><span class="line">        ExitProcess(<span class="number">0</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;bye ~~\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>能发现<code>sub_40100A</code>是对输入进行加密处理的函数，且使结果等于<code>6E32D0943418C2C33385BC35A1470250DD8923A9</code></p>
+<p>进入<code>sub_40100A</code></p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201113094531546.png" alt="image-20201113094531546"></p>
+<p>百度能明白，这是用系统自带的hash加密算法。<code>0x8004u</code>是加密标识码，表示加密方式。</p>
+<p>查询便可得知是sh1加密。于是写脚本把密码爆破。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line">flag2=<span class="string">&#x27;@DBApp&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100000</span>,<span class="number">999999</span>):</span><br><span class="line">    h2 = hashlib.sha1((str(i)+flag2).encode(<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">    flags = h2.hexdigest()</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;6e32d0943418c2c33385bc35a1470250dd8923a9&quot;</span> == flags:</span><br><span class="line">            <span class="keyword">print</span> (str(i)+flag2)</span><br></pre></td></tr></table></figure>
+
+<p>网上的wp脚本python版本都不同了，好在这个很容易写😉</p>
+<p>得出结果： 123321@DBApp</p>
+<p>接下来看下面，有第二次输入</p>
+<p>过程类似，进入第二次加密函数<code>sub_401019</code></p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201113101213702.png" alt="image-20201113101213702"></p>
+<p>这次换了加密方式，查询得是MD5加密，然而并没有更多的提示了，得不出结果。</p>
+<h3 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h3><p>在下面的比较中，还有个<code>sub_40100F</code>函数，这是这题的重点。</p>
+<p>进入后</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201113103600853.png" alt="image-20201113103600853"></p>
+<p>大意为：从<code>AAA</code>中取出数据与我们的输入进行处理，生成一个dbapp.rtf的文件</p>
+<p>这里还有个<code>sub_401005</code>函数，进入后可以知道是将<code>AAA</code>与我们的输入进行异或</p>
+<p><img src="https://gitee.com/onm1wa1/photo/raw/master/image-20201113104417413.png" alt="image-20201113104417413"></p>
+<p>a2代表AAA中的首部指针，v5是字符串的长度</p>
+<p>麻烦的是，还需要用工具 ResourceHacker 去查看文件中的<code>AAA</code></p>
+<p>由于生成了一个rtf文件，则搜索rtf文件头：{\rtfl</p>
+<p>且由于我们知道密码是六位的</p>
+<p>于是我们拿rtf文件前六位，正好就是文件头，与<code>AAA</code>文件中的前六位进行异或（此为反操作）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s = <span class="string">&quot;&#123;\\rtf1&quot;</span></span><br><span class="line"></span><br><span class="line">a = [<span class="number">0x05</span>,<span class="number">0x7D</span>,<span class="number">0x41</span>,<span class="number">0x15</span>,<span class="number">0x26</span>,<span class="number">0x01</span>]</span><br><span class="line"></span><br><span class="line">flag = <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,len(s)):</span><br><span class="line">	x = ord(s[i]) ^ a[i]</span><br><span class="line">	flag += chr(x)</span><br><span class="line">print(flag)</span><br></pre></td></tr></table></figure>
+
+<p>得到结果：~!3a@0</p>
+<p>于是运行程序，输入密码，正确，生成了flag文件</p>
+<p>Flag{N0_M0re_Free_Bugs} 搞定！</p>
+]]></content>
+      <tags>
+        <tag>逆向</tag>
       </tags>
   </entry>
 </search>
